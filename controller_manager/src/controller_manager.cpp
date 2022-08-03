@@ -1181,8 +1181,6 @@ controller_interface::return_type ControllerManager::update(
     rt_controllers_wrapper_.update_and_get_used_by_rt_list();
 
   auto ret = controller_interface::return_type::OK;
-  ++update_loop_counter_;
-  update_loop_counter_ %= update_rate_;
 
   for (auto loaded_controller : rt_controller_list)
   {
@@ -1192,24 +1190,14 @@ controller_interface::return_type ControllerManager::update(
     {
       auto controller_update_rate = loaded_controller.c->get_update_rate();
 
-      bool controller_go =
-        controller_update_rate == 0 || ((update_loop_counter_ % controller_update_rate) == 0);
-      RCLCPP_DEBUG(
-        get_logger(), "update_loop_counter: '%d ' controller_go: '%s ' controller_name: '%s '",
-        update_loop_counter_, controller_go ? "True" : "False",
-        loaded_controller.info.name.c_str());
+      auto controller_ret = loaded_controller.c->update(
+        time, (controller_update_rate != update_rate_ && controller_update_rate != 0)
+                ? rclcpp::Duration::from_seconds(1.0 / controller_update_rate)
+                : period);
 
-      if (controller_go)
+      if (controller_ret != controller_interface::return_type::OK)
       {
-        auto controller_ret = loaded_controller.c->update(
-          time, (controller_update_rate != update_rate_ && controller_update_rate != 0)
-                  ? rclcpp::Duration::from_seconds(1.0 / controller_update_rate)
-                  : period);
-
-        if (controller_ret != controller_interface::return_type::OK)
-        {
-          ret = controller_ret;
-        }
+        ret = controller_ret;
       }
     }
   }
