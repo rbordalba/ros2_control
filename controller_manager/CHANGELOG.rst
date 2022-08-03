@@ -2,6 +2,15 @@
 Changelog for package controller_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.6.0 (2022-08-03)
+------------------
+* Fixes of issue with seg-fault when checking interfaces on unconfigured controllers. (`#580 <https://github.com/ros-controls/ros2_control/issues/580>`_) (`#795 <https://github.com/ros-controls/ros2_control/issues/795>`_)
+* [ros2_control_node] Automatically detect if RT kernel is used and opportunistically enable SCHED_FIFO (`#748 <https://github.com/ros-controls/ros2_control/issues/748>`_) (`#768 <https://github.com/ros-controls/ros2_control/issues/768>`_)
+* Contributors: Denis Štogl, Tyler Weaver
+
+1.5.1 (2022-05-31)
+------------------
+
 1.5.0 (2022-04-29)
 ------------------
 * Spawner waits for services (`#683 <https://github.com/ros-controls/ros2_control/issues/683>`_) (`#697 <https://github.com/ros-controls/ros2_control/issues/697>`_)
